@@ -1,0 +1,25 @@
+{
+    "name": "申请自定义技能",
+    "nameEN": "Apply custom skills",
+    "funcName": "VoiceSkillApply",
+    "reqData": {
+        "name": "string",
+        "platform": "int",
+        "appid": "int",
+        "oauthid": "int"
+    },
+    "resData": {
+        "skillid": "int",
+        "status": "int",
+        "skill": {
+            "list": [
+                {
+                    "id": "int",
+                    "publish": "bool"
+                }
+            ],
+            "status": "bool"
+        }
+    },
+    "url": "/dnakit/v2/manager/voice"
+}
