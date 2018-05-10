@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"reflect"
 	"unicode"
 )
 
@@ -41,7 +40,10 @@ func main() {
 	funcComment = funcComment + "\n * ------------*/\n"
 	funcStart := "func " + config["funcName"].(string) + "(w http.ResponseWriter, r *http.Request) {\n"
 	funcEnd := "\n}\n"
-	getReqData(config["resData"].(map[string]interface{}))
+	strStruct := "var reqData struct {\n"
+	getReqData(config["resData"].(map[string]interface{}), &strStruct)
+	strStruct = strStruct + "}\n"
+	fmt.Println(strStruct)
 	// reqData :=
 	codeText := funcComment + funcStart + funcEnd
 	if _, err = fw.WriteString(codeText); err != nil {
@@ -49,24 +51,40 @@ func main() {
 	}
 }
 
-func getReqData(reqData map[string]interface{}) (strStruct string) {
-	strStruct = "var reqData struct {\n"
-	for key, value := range reqData {
-		// fmt.Println(i)
-		// fmt.Println(v)
-		fmt.Println(key, ": ", reflect.TypeOf(value))
-		switch value.(type) {
-		case map[string]interface{}:
-			getReqData(value.(map[string]interface{}))
-		case string:
-			r := []rune(key)
-			r[0] = unicode.ToUpper(r[0])
-			strStruct = strStruct + "\t" + string(r) + " " + value.(string) + "\n"
-		default:
-			// log.Fatal("JSON file error")
+func getReqData(key string, value interface{}, strStruct *string) {
+	r := []rune(key)
+	r[0] = unicode.ToUpper(r[0])
+	structKey := "\t" + string(r) + " "
+	switch value.(type) {
+	case string:
+		*strStruct = *strStruct + structKey + value.(string) + "`json:\"" + key + "\"`\n"
+	case map[string]interface{}:
+		*strStruct = *strStruct + structKey + "struct {\n"
+		for k, v := range value.(map[string]interface{}) {
+			getReqData(k, v, strStruct)
 		}
+		*strStruct = *strStruct + "} `json:\"" + key + "\"`\n"
+	case []interface{}:
+		var typ string
+		if len(value.([]interface{})) == 0 {
+			typ = "interface{}"
+		} else {
+			switch value.([]interface{})[0].(type) {
+			case string:
+				*strStruct = *strStruct + structKey + "[]" + value.(string) + "`json:\"" + key + "\"`\n"
+			case map[string]interface{}:
+				*strStruct = *strStruct + structKey + "[]struct {\n"
+				for k, v := range value.(map[string]interface{}) {
+					getReqData(k, v, strStruct)
+				}
+				*strStruct = *strStruct + "} `json:\"" + key + "\"`\n"
+			case []interface{}:
+				*strStruct = *strStruct + structKey + "[]"
+				getReqData()
+			}
+		}
+		*strStruct = *strStruct + structKey + "[]" + typ
+	default:
+		log.Fatal("JSON file error")
 	}
-	strStruct = strStruct + "}\n"
-	fmt.Println(strStruct)
-	return ""
 }

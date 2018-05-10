@@ -12,6 +12,7 @@
         "skillid": "int",
         "status": "int",
         "skill": {
+            "intLinst": ["int"],
             "list": [
                 {
                     "id": "int",
