@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -28,7 +27,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fw, err := os.OpenFile("test.kit", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	fw, err := os.OpenFile("output.go", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if nil != err {
 		log.Fatal(err)
 	}
@@ -40,51 +39,48 @@ func main() {
 	funcComment = funcComment + "\n * ------------*/\n"
 	funcStart := "func " + config["funcName"].(string) + "(w http.ResponseWriter, r *http.Request) {\n"
 	funcEnd := "\n}\n"
-	strStruct := "var reqData struct {\n"
-	getReqData(config["resData"].(map[string]interface{}), &strStruct)
-	strStruct = strStruct + "}\n"
-	fmt.Println(strStruct)
-	// reqData :=
-	codeText := funcComment + funcStart + funcEnd
+	strStruct := "\tvar resData "
+	json2struct("", config["resData"].(map[string]interface{}), &strStruct, "\t")
+	// fmt.Println(strStruct)
+	codeText := funcComment + funcStart + strStruct + funcEnd
 	if _, err = fw.WriteString(codeText); err != nil {
 		panic(err)
 	}
 }
 
-func getReqData(key string, value interface{}, strStruct *string) {
-	r := []rune(key)
-	r[0] = unicode.ToUpper(r[0])
-	structKey := "\t" + string(r) + " "
+func json2struct(key string, value interface{}, strStruct *string, strIndent string) {
+	var jsonTag string
+	if "" != key {
+		jsonTag = " `json:\"" + key + "\"`\n"
+	} else {
+		jsonTag = "\n"
+	}
 	switch value.(type) {
 	case string:
-		*strStruct = *strStruct + structKey + value.(string) + "`json:\"" + key + "\"`\n"
+		*strStruct = *strStruct + value.(string) + jsonTag
 	case map[string]interface{}:
-		*strStruct = *strStruct + structKey + "struct {\n"
+		*strStruct = *strStruct + "struct {\n"
 		for k, v := range value.(map[string]interface{}) {
-			getReqData(k, v, strStruct)
+			*strStruct = *strStruct + strIndent + "\t" + key2field(k) + " "
+			json2struct(k, v, strStruct, strIndent+"\t")
 		}
-		*strStruct = *strStruct + "} `json:\"" + key + "\"`\n"
+		*strStruct = *strStruct + strIndent + "}" + jsonTag
 	case []interface{}:
-		var typ string
+		*strStruct = *strStruct + "[]"
 		if len(value.([]interface{})) == 0 {
-			typ = "interface{}"
-		} else {
-			switch value.([]interface{})[0].(type) {
-			case string:
-				*strStruct = *strStruct + structKey + "[]" + value.(string) + "`json:\"" + key + "\"`\n"
-			case map[string]interface{}:
-				*strStruct = *strStruct + structKey + "[]struct {\n"
-				for k, v := range value.(map[string]interface{}) {
-					getReqData(k, v, strStruct)
-				}
-				*strStruct = *strStruct + "} `json:\"" + key + "\"`\n"
-			case []interface{}:
-				*strStruct = *strStruct + structKey + "[]"
-				getReqData()
-			}
+			value.([]interface{})[0] = "interface{}"
 		}
-		*strStruct = *strStruct + structKey + "[]" + typ
+		json2struct(key, value.([]interface{})[0], strStruct, strIndent)
 	default:
 		log.Fatal("JSON file error")
 	}
+}
+
+func key2field(key string) string {
+	if "id" == key {
+		return "ID"
+	}
+	r := []rune(key)
+	r[0] = unicode.ToUpper(r[0])
+	return string(r)
 }
