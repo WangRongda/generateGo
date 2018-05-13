@@ -1,26 +1,52 @@
-{
-    "name": "申请自定义技能",
-    "nameEN": "Apply custom skills",
-    "funcName": "VoiceSkillApply",
-    "reqData": {
-        "name": "string",
-        "platform": "int",
-        "appid": "int",
-        "oauthid": "int"
+[
+    {
+        "name": "申请自定义技能",
+        "nameEN": "Apply custom skills",
+        "funcName": "VoiceSkillApply",
+        "method": "post",
+        "reqData": {
+            "name": "string",
+            "platform": "int",
+            "appid": "int",
+            "oauthid": "int"
+        },
+        "resData": {
+            "skillid": "int",
+            "status": "int",
+            "skill": {
+                "intLinst": [
+                    "int"
+                ],
+                "list": [
+                    {
+                        "id": "int",
+                        "publish": "bool"
+                    }
+                ],
+                "status": "bool"
+            }
+        },
+        "url": "/dnakit/v2/manager/voice"
     },
-    "resData": {
-        "skillid": "int",
-        "status": "int",
-        "skill": {
-            "intLinst": ["int"],
-            "list": [
-                {
-                    "id": "int",
-                    "publish": "bool"
-                }
-            ],
-            "status": "bool"
-        }
-    },
-    "url": "/dnakit/v2/manager/voice"
-}
+    {
+        "name": "王蓉打",
+        "nameEN": "Apply custom skills",
+        "funcName": "Wangrongda",
+        "reqData": {
+            "name": "string",
+            "platform": "int",
+            "appid": "int",
+            "oauthid": "int"
+        },
+        "url": "/dnakit/v2/manager/voice",
+        "parseBizSign": true,
+        "checkPremission": false,
+        "kitLog": {
+            "type": "skill",
+        "text": "这是一个日志"
+        },
+        "sql": [
+            "Where(\"skillid = ?\", reqData.ID).Delete(DnakitSkill{})"
+        ]
+    }
+]
