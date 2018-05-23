@@ -1,0 +1,23 @@
+{
+    "projectName": "dnakit",
+    "projectDir": "/home/d/dnakit/dnakitfront/",
+    "routerFile": "router",
+    "raw": [
+        {
+            "name": "根据pid和intentid获取相应小类的意图信息",
+            "funcName": "CateVoiceInfo",
+            "fileName": "voiceHandler",
+            "method": "get",
+            "url": "/dnakit/v2/business/category/intent/info",
+            "reqData": {
+                "pid": "int `need:\"true\"`",
+                "intentid": "int `need:\"true\"`"
+            },
+            "resData": {
+                "voicecmd": "string",
+                "controlcmd": "string"
+            },
+            "checkPremission": 2
+        }
+    ]
+}

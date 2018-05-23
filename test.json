@@ -1,52 +1,64 @@
-[
-    {
-        "name": "申请自定义技能",
-        "nameEN": "Apply custom skills",
-        "funcName": "VoiceSkillApply",
-        "method": "post",
-        "reqData": {
-            "name": "string",
-            "platform": "int",
-            "appid": "int",
-            "oauthid": "int"
-        },
-        "resData": {
-            "skillid": "int",
-            "status": "int",
-            "skill": {
-                "intLinst": [
-                    "int"
-                ],
-                "list": [
+{
+    "projectName": "dnakit",
+    "projectDir_tmp": "./dist/",
+    "projectDir": "/home/d/dnakit/dnakitend/",
+    "routerFile": "router",
+    "raw": [
+        {
+            "name": "产品license限制策略 列表",
+            "funcName": "ProductLicensePolicyList",
+            "fileName": "managerProductLicensePolicy",
+            "method": "get",
+            "url": "/dnakit/v2/manager/product/policy/license/list",
+            "reqData": {
+                "page": "int",
+                "pagesize": "int"
+            },
+            "resData": {
+                "total": "int",
+                "result": [
                     {
-                        "id": "int",
-                        "publish": "bool"
+                        "policyid": "int",
+                        "officialpid": "string",
+                        "productname": "string",
+                        "policy": "int",
+                        "lid": "string"
                     }
-                ],
-                "status": "bool"
-            }
+                ]
+            },
+            "sql": [],
+            "UTcases": [
+                {
+                    "input": {
+                        "page": "int",
+                        "pagesize": "int"
+                    }
+                }
+            ]
         },
-        "url": "/dnakit/v2/manager/voice"
-    },
-    {
-        "name": "王蓉打",
-        "nameEN": "Apply custom skills",
-        "funcName": "Wangrongda",
-        "reqData": {
-            "name": "string",
-            "platform": "int",
-            "appid": "int",
-            "oauthid": "int"
+        {
+            "name": "新增 产品license限制策略",
+            "funcName": "NewProductLicensePolicy",
+            "fileName": "managerProductLicensePolicy",
+            "method": "post",
+            "reqData": {
+                "officialpid": "string",
+                "policy": "int",
+                "lid": "string"
+            },
+            "resData": "int",
+            "url": "/dnakit/v2/manager/product/policy/license"
         },
-        "url": "/dnakit/v2/manager/voice",
-        "parseBizSign": true,
-        "checkPremission": false,
-        "kitLog": {
-            "type": "skill",
-        "text": "这是一个日志"
-        },
-        "sql": [
-            "Where(\"skillid = ?\", reqData.ID).Delete(DnakitSkill{})"
-        ]
-    }
-]
+        {
+            "name": "删除 产品license限制策略",
+            "funcName": "RmProductLicensePolicy",
+            "fileName": "managerProductLicensePolicy",
+            "method": "delete",
+            "reqData": {
+                "policyid": "int"
+            },
+            "resData": null,
+            "url": "/dnakit/v2/manager/product/policy/license"
+        }
+    ]
+}

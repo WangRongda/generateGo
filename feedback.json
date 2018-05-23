@@ -1,0 +1,84 @@
+{
+    "projectName": "dnakit",
+    "projectDir": "/home/d/dnakit/dnakitfront/",
+    "routerFile": "router",
+    "raw": [
+        {
+            "name": "新建问题",
+            "funcName": "IssueCreate",
+            "fileName": "issue",
+            "method": "post",
+            "url": "/dnakit/v2/business/issue",
+            "reqData": {
+                "type": "int",
+                "title": "string",
+                "detail": "string",
+                "attachments": [
+                    {
+                        "name": "string",
+                        "id": "int"
+                    }
+                ],
+                "phone": "string",
+                "pid": "int"
+            },
+            "resData": {
+                "issue_id": "string"
+            },
+            "checkPremission": 1
+        },
+        {
+            "name": "问题列表",
+            "funcName": "IssueList",
+            "fileName": "issue",
+            "method": "get",
+            "url": "/dnakit/v2/business/issue/list",
+            "reqData": {
+                "page": "int",
+                "pagesize": "int"
+            },
+            "resData": [{
+                "title": "string",
+                "type": "int",
+                "status": "int",
+                "createdAt": "string"
+            }],
+            "checkPremission": 1
+        },
+        {
+            "name": "问题详情",
+            "funcName": "IssueInfo",
+            "fileName": "issue",
+            "method": "get",
+            "url": "/dnakit/v2/business/issue",
+            "reqData": {
+                "id": "int"
+            },
+            "resData": {
+                "title": "string",
+                "status": "int",
+                "detail": "string",
+                "deadLine ": "string",
+                "version": "string",
+                "changelog": "string",
+                "materialID": "int",
+                "materialName": "string",
+                "sdkID": "int",
+                "sdkName": "string"
+            },
+            "checkPremission": 1
+        },
+        {
+            "name": "问题反馈用户确认",
+            "funcName": "Issue",
+            "fileName": "issue",
+            "method": "put",
+            "url": "/dnakit/v2/business/issue",
+            "reqData": {
+                "id": "int",
+                "status": "int"
+            },
+            "checkPremission": 1
+        }
+    ]
+}
