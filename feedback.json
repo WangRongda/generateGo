@@ -13,17 +13,12 @@
                 "type": "int",
                 "title": "string",
                 "detail": "string",
-                "attachments": [
-                    {
-                        "name": "string",
-                        "id": "int"
-                    }
-                ],
+                "attachments": "string",
                 "phone": "string",
                 "pid": "int"
             },
             "resData": {
-                "issue_id": "string"
+                "issueID": "string"
             },
             "checkPremission": 1
         },
@@ -37,12 +32,17 @@
                 "page": "int",
                 "pagesize": "int"
             },
-            "resData": [{
-                "title": "string",
-                "type": "int",
-                "status": "int",
-                "createdAt": "string"
-            }],
+            "resData": {
+                "total": "int",
+                "result": [
+                    {
+                        "title": "string",
+                        "type": "int",
+                        "status": "int",
+                        "createdAt": "time.Time"
+                    }
+                ]
+            },
             "checkPremission": 1
         },
         {
@@ -61,16 +61,19 @@
                 "deadLine ": "string",
                 "version": "string",
                 "changelog": "string",
-                "materialID": "int",
-                "materialName": "string",
-                "sdkID": "int",
-                "sdkName": "string"
+                "materials": [
+                    {
+                        "type": "string",
+                        "fileID": "int",
+                        "name": "string"
+                    }
+                ]
             },
             "checkPremission": 1
         },
         {
             "name": "问题反馈用户确认",
-            "funcName": "Issue",
+            "funcName": "IssueCustomerConfirm",
             "fileName": "issue",
             "method": "put",
             "url": "/dnakit/v2/business/issue",
@@ -79,6 +82,106 @@
                 "status": "int"
             },
             "checkPremission": 1
+        },
+        {
+            "name": "根据issueid获取issue相关的客户确认信息",
+            "funcName": "IssueCtConfirmInfoForCloud",
+            "fileName": "issue",
+            "method": "post",
+            "url": "/dnakit/v2/business/issue/forcloud/getverifyinfo ",
+            "reqData": {
+                "list": [
+                    "string"
+                ]
+            },
+            "resData": [
+                {
+                    "issue_id": "string",
+                    "created_at": "time.Time",
+                    "custom_name": "string",
+                    "custom_result": "int",
+                    "source_id": "int",
+                    "file_name": "string"
+                }
+            ]
+        },
+        {
+            "name": "云服务上报给kit关于issue的状态",
+            "funcName": "IssueUpdateStatusFromCloud",
+            "fileName": "issue",
+            "method": "post",
+            "url": "/dnakit/v2/business/issue/forcloud/uploadstatus",
+            "reqData": {
+                "list": [
+                    {
+                        "issue_id": "string",
+                        "status": "int"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "云服务提交需求对应的项目的版本号，计划发布时间，客户确认截止时间给kit",
+            "funcName": "IssueUpdateFromCloud",
+            "fileName": "issue",
+            "method": "post",
+            "url": "/dnakit/v2/business/issue/forcloud/project/info",
+            "reqData": {
+                "issue_list": [
+                    "string"
+                ],
+                "info": {
+                    "created_at": "time.Time",
+                    "project_id": "string",
+                    "project_name": "string",
+                    "creat_user_id": "string",
+                    "creat_user_name": "string",
+                    "desc_info": "string",
+                    "dead_line": "time.Time",
+                    "ct_dead_line": "time.Time",
+                    "version": "string",
+                    "ct_updata_info_cn": "string",
+                    "ct_updata_info_en": "string",
+                    "status": "string"
+                }
+            }
+        },
+        {
+            "name": "云服务提交客户测试指导方案，开发指导手册给kit",
+            "funcName": "IssueUploadMaterialsFromCloud",
+            "fileName": "issue",
+            "method": "post",
+            "url": "/dnakit/v2/business/issue/forcloud/material",
+            "reqData": {
+                "issue_list": [
+                    "string"
+                ],
+                "list": [
+                    {
+                        "id": "int",
+                        "created_at": "time.Time",
+                        "updated_at": "time.Time",
+                        "material_id": "string",
+                        "material_name": "string",
+                        "project_id": "projectid",
+                        "dead_line": "time.Time",
+                        "file_name": "string",
+                        "file_source_id": "string",
+                        "git_lab_path": "string",
+                        "need": "int"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "云服务下载kit的客户确认文件",
+            "funcName": "IssueConfirmFileForCloud",
+            "fileName": "issue",
+            "method": "post",
+            "url": "/dnakit/v2/business/issue/forcloud/getfile",
+            "reqData": {
+                "sourceid": "string `need:\"true\"`"
+            }
         }
     ]
 }

@@ -243,7 +243,7 @@ const checkPremission string = `
 `
 
 func (c configer) generateCheckPremission() string {
-	v := c.Get("checkPremission").(float64)
+	v := c.Get("checkPremission")
 	switch v {
 	case 0:
 		return fmt.Sprintf(checkPremission, v, "0")
